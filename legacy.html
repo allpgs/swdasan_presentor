@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>수원다산중학교 Presenter</title>
+    <link rel="shortcut icon" href="https://swdasan-m.goesw.kr/module/upload/file/selectImageView.do?atchFileId=20000010741">
+    <link rel="stylesheet" href="https://unpkg.com/@picocss/pico">
+    <style>
+        @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.4/dist/web/variable/pretendardvariable.css");
+
+        * {
+            font-family: "Pretendard Variable";
+        }
+
+        html {
+            background: #fff;
+            overflow: hidden;
+        }
+
+        main.active {
+            padding: 0;
+        }
+
+        img {
+            width: 250px;
+            margin-bottom: 40px;
+        }
+
+        iframe {
+            width: 100vw;
+            height: 100vh;
+            display: none;
+            background: white;
+        }
+        main.active iframe {
+            display: block;
+        }
+
+        .container {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+        }
+        main.active .container {
+            display: none;
+        }
+
+        .row {
+            display: flex;
+            align-items: center;
+            flex-direction: row;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <section class="container">
+            <img src="https://swdasan-m.goesw.kr/module/upload/file/selectImageView.do?atchFileId=30000238977" alt="수원다산중학교">
+            <div class="row">
+                <button id="start">&#xf044; 프레젠테이션 시작</button>&nbsp;&nbsp;
+                <button id="new">신규 모드로 보기 &#xf045;</button>
+            </div>
+        </section>
+        <section id="presentation">
+            <iframe src="/presentation/0.html"></iframe>
+        </section>
+    </main>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code-lts.github.io/jquery-fullscreen-plugin/jquery.fullscreen-min.js"></script>
+    <script>
+        $('#start').bind('click', function() {
+            $('main').addClass('active');
+            $('iframe').fullScreen(true);
+            $('iframe')[0].contentWindow.postMessage('start', '*');
+        })
+
+        $(document).bind('fullscreenchange', function(event) {
+            if (!$(document).fullScreen()) {
+                $('iframe')[0].contentWindow.postMessage('stop', '*');
+                $('main').removeClass('active');
+            }
+        });
+
+        /* Updated 20220717 (New Presentor 호환성) */
+
+        $('#new').bind('click', function() {
+            location.href = '/'
+        })
+
+        $(window)[0].addEventListener('message', function(event) {
+            if (event.origin !== location.origin) return;
+
+            console.log("[Controller] Receive message:", event.data)
+            if (event.data.includes("loaded")) {
+                console.log("[Controller] Loaded Slide:", event.data.split("|")[1], "Slide")
+            } else if (event.data === "next") {
+                $('iframe')[0].contentWindow.postMessage('next', '*');
+            }
+        });
+    </script>
+</body>
+</html>

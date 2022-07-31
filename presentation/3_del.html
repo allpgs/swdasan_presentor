@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presentation Slide Page</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        video {
+            width: 100vw;
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+    <video preload="auto" src="/object/3.mp4"></video>
+    <script>
+        window.addEventListener("load", e => {
+            parent.postMessage('loaded|3', '*');
+            document.querySelector('video').play();
+        })
+
+        window.addEventListener("message", e => {
+            if (event.origin !== location.origin) return;
+
+            console.log("[Presentor] Receive message:", e.data)
+            if (e.data === "start") {
+                document.querySelector('video').play();
+            } else if (e.data === "stop") {
+                document.querySelector('video').pause();
+            }
+        });
+    </script>
+
+    <script>
+        setInterval(() => {
+            if (!document.querySelector('video').paused) {
+                console.log("[Presentor] Video CurrentTime:", document.querySelector('video').currentTime)
+            }
+        }, 0);
+    </script>
+</body>
+</html>

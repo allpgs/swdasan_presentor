@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>수원다산중학교 Presenter</title>
+    <link rel="shortcut icon" href="https://swdasan-m.goesw.kr/module/upload/file/selectImageView.do?atchFileId=20000010741">
+    <style>
+      @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.4/dist/web/variable/pretendardvariable.css");
+
+      ::selection {
+        background-color: rgba(16, 149, 193, 0.125);
+      }
+
+      * {
+        font-family: "Pretendard Variable";
+      }
+
+      img {
+        margin: 0 auto !important;
+      }
+
+      iframe {
+        display: none !important;
+      }
+
+      main.active iframe {
+        display: block !important;
+      }
+    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="p-0 m-0">
+    <main>
+      <section class="bg-gray-50">
+        <div
+          class="max-w-screen-xl px-4 py-32 mx-auto lg:h-screen lg:items-center lg:flex"
+        >
+          <div class="max-w-xl mx-auto text-center">
+            <img
+              class="w-60"
+              src="https://swdasan-m.goesw.kr/module/upload/file/selectImageView.do?atchFileId=30000238977"
+              alt="수원다산중학교"
+            />
+            <br />
+
+            <p class="mt-4 sm:leading-relaxed sm:text-xl">
+              <!-- 프레젠테이션 파일: 2022 별빛독서캠프_북트레일러 -->
+              프레젠테이션 파일: 2022 별빛독서캠프_2부
+            </p>
+
+            <div class="flex flex-wrap justify-center gap-4 mt-8">
+              <a
+                class="block w-full px-12 py-3 text-md font-medium text-white bg-blue-500 rounded shadow sm:w-auto active:bg-blue-400 hover:bg-blue-600 focus:outline-none focus:ring"
+                href="/legacy.html"
+              >
+                &#xf044; 레거시 모드로 보기
+              </a>&nbsp;
+              <button
+                class="block w-full px-12 py-3 text-md font-medium text-white bg-blue-500 rounded shadow sm:w-auto active:bg-blue-400 hover:bg-blue-600 focus:outline-none focus:ring"
+              >
+                프레젠테이션 시작 &#xf045;
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section>
+        <iframe class="bg-white" src="/presentation/0.html"></iframe>
+      </section>
+    </main>
+    <script>
+      const requestFullscreen = (element) => {
+        if (element.requestFullscreen) return element.requestFullscreen();
+        if (element.webkitRequestFullscreen)
+          return element.webkitRequestFullscreen();
+        if (element.mozRequestFullScreen) return element.mozRequestFullScreen();
+        if (element.msRequestFullscreen) return element.msRequestFullscreen();
+      };
+
+      const exitFullScreen = () => {
+        if (document.exitFullscreen) return document.exitFullscreen();
+        if (document.webkitCancelFullscreen)
+          return document.webkitCancelFullscreen();
+        if (document.mozCancelFullScreen) return document.mozCancelFullScreen();
+        if (document.msExitFullscreen) return document.msExitFullscreen();
+      };
+
+      const fullscreenElement = () => {
+        if (document.fullscreenElement) return document.fullscreenElement;
+        if (document.webkitfullscreenElement)
+          return document.webkitfullscreenElement;
+        if (document.mozfullscreenElement) return document.mozfullscreenElement;
+        if (document.msfullscreenElement) return document.msfullscreenElement;
+      };
+
+      document.querySelector("button").addEventListener("click", function () {
+        document.querySelector("main").classList.add("active");
+        requestFullscreen(document.querySelector("iframe"));
+        document
+          .querySelector("iframe")
+          .contentWindow.postMessage("start", "*");
+      });
+
+      document.addEventListener("fullscreenchange", (event) => {
+        if (!fullscreenElement()) {
+          document
+            .querySelector("iframe")
+            .contentWindow.postMessage("stop", "*");
+          document.querySelector("main").classList.remove("active");
+        }
+      });
+
+      window.addEventListener("message", (e) => {
+        if (event.origin !== location.origin) return;
+
+        console.log("[Controller] Receive message:", e.data);
+        if (e.data.includes("loaded")) {
+          console.log(
+            "[Controller] Loaded Slide:",
+            e.data.split("|")[1],
+            "Slide"
+          );
+        } else if (e.data === "next") {
+          document
+            .querySelector("iframe")
+            .contentWindow.postMessage("next", "*");
+        }
+      });
+    </script>
+  </body>
+</html>

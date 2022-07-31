@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presentation Slide Page</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+
+            display: flex; align-items: center; justify-content: center;
+            height: 100vh; width: 100vw;
+        }
+        img {
+            width: 100vw;
+            /* cursor: pointer; */
+        }
+    </style>
+</head>
+<body>
+    <img preload="auto" loading="lazy" src="/object/0.png" />
+    <script>
+        window.addEventListener("load", e => {
+            parent.postMessage('loaded|0', '*');
+        })
+
+        window.addEventListener("message", e => {
+            if (event.origin !== location.origin) return;
+
+            console.log("[Presentor] Receive message:", e.data)
+            // if (e.data === "next") {
+            //     console.log("[Presentor] Redirect Slide:", "1 Slide")
+
+            //     location.href = "/presentation/1.html"
+            // }
+        });
+
+        // function goNext() {
+        //     parent.postMessage('next', '*');
+        // }
+    </script>
+
+    <script>
+        // document.querySelector('img').addEventListener('click', goNext);
+    </script>
+</body>
+</html>
